@@ -22,7 +22,7 @@ func main() {
 		log.Fatalf("run migrations: %v", err)
 	}
 
-	r := api.NewRouter(db, weather.NewClient())
+	r := api.NewRouter(db, weather.NewClient(), cfg.StaticDir)
 	if err := r.Run(":" + cfg.Port); err != nil {
 		log.Fatalf("server exited: %v", err)
 	}

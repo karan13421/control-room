@@ -3,14 +3,16 @@ package config
 import "os"
 
 type Config struct {
-	Port   string
-	DBPath string
+	Port      string
+	DBPath    string
+	StaticDir string // if set, NewRouter also serves the built frontend from here
 }
 
 func Load() Config {
 	return Config{
-		Port:   getEnv("PORT", "8080"),
-		DBPath: getEnv("DB_PATH", "data/control_room.db"),
+		Port:      getEnv("PORT", "8080"),
+		DBPath:    getEnv("DB_PATH", "data/control_room.db"),
+		StaticDir: getEnv("STATIC_DIR", ""),
 	}
 }
 

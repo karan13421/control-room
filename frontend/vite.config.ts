@@ -10,7 +10,9 @@ export default defineConfig({
   ],
   server: {
     proxy: {
-      '/api': 'http://localhost:8080',
+      // Overridable so the docker-compose dev setup can point this at the
+      // `backend` service name instead of localhost.
+      '/api': process.env.VITE_API_PROXY_TARGET ?? 'http://localhost:8080',
     },
   },
 })

@@ -1,0 +1,42 @@
+# Local development only: hot-reloading containers built from
+# backend/Dockerfile.dev and frontend/Dockerfile.dev, with source mounted
+# from the host. For deployment, build this directory's root Dockerfile
+# instead (one image, no compose needed) — see the README.
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    environment:
+      DB_PATH: /data/control_room.db
+    volumes:
+      - ./backend:/app
+      - go-mod-cache:/go/pkg/mod
+      - ./backend/data:/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/healthz"]
+      interval: 5s
+      timeout: 3s
+      start_period: 30s
+      retries: 5
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    environment:
+      VITE_API_PROXY_TARGET: http://backend:8080
+    volumes:
+      - ./frontend:/web
+      - frontend-node-modules:/web/node_modules
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  go-mod-cache:
+  frontend-node-modules:

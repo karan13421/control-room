@@ -1,0 +1,7 @@
+.git
+server
+migrate
+ingest
+data/*.db
+data/*.db-shm
+data/*.db-wal

@@ -26,7 +26,7 @@ func TestRecommendationHandler_BadAtParam(t *testing.T) {
 	t.Cleanup(func() { db.Close() })
 	require.NoError(t, store.RunMigrations(db, store.Migrations()))
 
-	router := NewRouter(db, erroringWeather{})
+	router := NewRouter(db, erroringWeather{}, "")
 
 	req := httptest.NewRequest(http.MethodGet, "/api/recommendation?at=not-a-date", nil)
 	rec := httptest.NewRecorder()

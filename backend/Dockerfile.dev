@@ -1,0 +1,14 @@
+# Dev image: `go run` against source mounted from the host, so edits take
+# effect on the next restart without rebuilding the image. Not used for
+# deployment — see the repo-root Dockerfile for that.
+FROM golang:1.26-alpine
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+# Warm the build cache now, at image-build time, so `go run` at container
+# start only has to relink (the bind mount below puts back this same
+# source; only files you actually change need recompiling).
+RUN go build -o /dev/null ./cmd/server
+EXPOSE 8080
+CMD ["go", "run", "./cmd/server"]
